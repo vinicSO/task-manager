@@ -25,6 +25,7 @@ class UpdateTaskRequest extends FormRequest
         return [
             'title' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
+            'status' => ['nullable', \Illuminate\Validation\Rule::enum(\App\Enums\TaskStatus::class)],
         ];
     }
 }

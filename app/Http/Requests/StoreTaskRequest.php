@@ -25,6 +25,7 @@ class StoreTaskRequest extends FormRequest
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
+            'status' => ['nullable', \Illuminate\Validation\Rule::enum(\App\Enums\TaskStatus::class)],
         ];
     }
 }

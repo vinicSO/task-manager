@@ -16,7 +16,11 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $tasks = $request->user()->tasks()->paginate(10);
+        $tasks = $request->user()->tasks()
+            ->when($request->status, fn ($query, $status) => $query->where('status', $status))
+            ->latest()
+            ->paginate(10);
+
         return TaskResource::collection($tasks);
     }
 
