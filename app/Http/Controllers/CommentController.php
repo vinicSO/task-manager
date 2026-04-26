@@ -25,6 +25,8 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request, Task $task)
     {
+        \Illuminate\Support\Facades\Gate::authorize('view', $task);
+
         /** @var Comment $comment */
         $comment = $task->comments()->newModelInstance([
             'content' => $request->string('content'),
