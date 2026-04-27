@@ -18,6 +18,7 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $tasks = $request->user()->tasks()
+            ->with('comments')
             ->when($request->status, fn ($query, $status) => $query->where('status', $status))
             ->latest()
             ->paginate(10);
