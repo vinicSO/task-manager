@@ -15,7 +15,7 @@ install: ## Instala dependências e gera chave
 	composer install
 	cp .env.example .env
 	$(SAIL) up -d
-	$(SAIL) artisan key:generate
+	php artisan key:generate
 	$(SAIL) artisan migrate --seed
 
 migrate: ## Roda as migrations
