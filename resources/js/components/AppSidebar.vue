@@ -19,11 +19,6 @@ import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Painel',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
         title: 'Gerenciador',
         href: '/tasks',
         icon: BookOpen,

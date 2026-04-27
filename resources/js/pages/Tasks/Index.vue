@@ -27,6 +27,12 @@ type Task = {
 const tasks = ref<Task[]>([]);
 const currentFilter = ref('');
 const isLoading = ref(true);
+const isSubmitting = ref(false);
+
+const newTask = ref({
+    title: '',
+    description: '',
+});
 
 const fetchTasks = async (status = '') => {
     isLoading.value = true;
@@ -47,6 +53,37 @@ const fetchTasks = async (status = '') => {
         console.error('Failed to load tasks', e);
     } finally {
         isLoading.value = false;
+    }
+};
+
+const createTask = async () => {
+    if (!newTask.value.title) return;
+    
+    isSubmitting.value = true;
+    try {
+        const res = await fetch(`/api/tasks`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            },
+            credentials: 'include',
+            body: JSON.stringify({ 
+                title: newTask.value.title, 
+                description: newTask.value.description, 
+                status: 'pending' 
+            })
+        });
+        if (res.ok) {
+            newTask.value = { title: '', description: '' };
+            fetchTasks(currentFilter.value);
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        isSubmitting.value = false;
     }
 };
 
@@ -148,6 +185,41 @@ const getStatusLabel = (status: string) => {
                 </Button>
             </div>
         </div>
+
+        <!-- Create Task Form -->
+        <Card class="mb-4">
+            <CardHeader class="pb-3 text-sm">
+                <CardTitle class="text-base">Adicionar Nova Tarefa</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <form @submit.prevent="createTask" class="flex flex-col sm:flex-row gap-4 items-start">
+                    <div class="flex-1 w-full">
+                        <input 
+                            v-model="newTask.title" 
+                            type="text" 
+                            placeholder="Título da tarefa..." 
+                            required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                    </div>
+                    <div class="flex-1 w-full">
+                        <input 
+                            v-model="newTask.description" 
+                            type="text" 
+                            placeholder="Descrição curta (opcional)" 
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                    </div>
+                    <Button type="submit" size="sm" class="h-10 shrink-0 w-full sm:w-auto" :disabled="isSubmitting || !newTask.title">
+                        <svg v-if="isSubmitting" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Criar Tarefa
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
 
         <!-- Loading State -->
         <div v-if="isLoading" class="flex justify-center items-center py-20">
