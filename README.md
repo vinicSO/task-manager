@@ -1,6 +1,6 @@
-# Task Management API - Backend Developer Challenge 🚀
+# API de Gerenciamento de Tarefas 🚀
 
-Esta é uma API RESTful completa desenvolvida em **Laravel 11+** e **PHP 8.3+** para o gerenciamento de tarefas e comentários. Este sistema permite criar, editar, excluir e visualizar tarefas, além de gerenciá-las através de status, adicionar comentários e possuir camadas de proteção.
+Esta é uma API RESTful completa desenvolvida em **Laravel 13** e **PHP 8.3+** para o gerenciamento de tarefas. Este sistema permite criar, editar, excluir e visualizar tarefas, além de gerenciá-las através de status, adicionar comentários e possuir camadas de proteção.
 
 O foco primordial deste projeto foi aplicar boas práticas de desenvolvimento de software, padrões de projeto estritos, o uso consistente do **GitFlow** e a excelência na cobertura do código.
 
@@ -9,56 +9,44 @@ O foco primordial deste projeto foi aplicar boas práticas de desenvolvimento de
 ## 🛠️ Requisitos Técnicos Atingidos
 
 - ✅ **Framework:** Laravel
-- ✅ **Comandos Git:** Uso intenso do GitFlow para desenvolvimento (separando `main`, `develop` e os ramos de `feature/`).
 - ✅ **API Restful:** Controllers e roteamentos semânticos isolados de front-end.
 - ✅ **Filtros e Status:** Funcionalidade real para alteração e verificação (Ex: `?status=pending`).
 - ✅ **Autenticação e Segurança:** Implementado com Laravel Sanctum e Laravel Policies.
-- ✅ **Diferencial (Testes):** Cbertura de testes de ponta-a-ponta via pacote [**Pest**](https://pestphp.com/).
-- ✅ **Diferencial (Docker):** Totalmente englobado no [Laravel Sail](https://laravel.com/docs/sail).
-- ✅ **Diferencial (Migrations e Seeders):** Tudo foi estruturado via terminal com base de mentirinha (Faker).
+- ✅ **Testes:** Cbertura de testes de ponta-a-ponta via pacote [**Pest**](https://pestphp.com/).
+- ✅ **Docker:** Totalmente englobado no [Laravel Sail](https://laravel.com/docs/sail).
 
 ---
 
 ## 🚀 Como Rodar o Projeto
 
-Como o projeto é construído em cima do **Laravel Sail**, para iniciar o projeto não é necessário ter PHP, Composer ou Node na sua máquina real, apenas o **Docker** configurado.
+Para facilitar a configuração do ambiente baseado no **Laravel Sail** (Docker), centralizamos os comandos essenciais através do `Makefile` incluído na raiz do projeto. 
 
 ### 1. Clonar este repositório
 ```bash
-git clone https://github.com/SEU_USUARIO/NOME_DO_REPO.git
+git clone https://github.com/vinicSO/task-manager.git
 cd task-manager
 ```
 
-### 2. Configurar o ambiente Local (.env)
-Copie o arquivo padrão de exemplos de variáveis para criar as variáveis definitivas do servidor.
+### 2. Instalação Completa Automatizada
+Para instalar as dependências, criar o arquivo de variáveis, subir os contêineres, gerar a chave do framework e popular o banco automaticamente com dados variados em uma única chamada, basta rodar (requer Composer nativo ou via Devcontainer):
 ```bash
-cp .env.example .env
-```
-*(O Laravel Sail possui credenciais Default que não exigem manutenções pesadas).*
-
-### 3. Subir os Contêineres (Docker)
-Agora inicie os serviços do banco de dados e servidor. O Sail vai provisionar as bibliotecas necessárias.
-```bash
-./vendor/bin/sail up -d
-```
-*(Caso não possua a pasta `vendor`, utilize uma imagem rápida fornecida pelo Laravel para instalar dependências via devcontainer)*:
-```bash
-docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
+make install
 ```
 
-### 4. Preparar o Banco e Popular Dados (Seeders)
-Depois dos contêineres estarem no ar (status Running), basta injetar nossas configurações ao banco. O comando a seguir roda as *Migrations* já injetando dados *Fake*.
+### 3. Gerir o Servidor Diariamente
+Caso já tenha instalado, basta iniciar e parar os contêineres em segundo-plano quando trabalhar no repositório:
 ```bash
-./vendor/bin/sail artisan migrate:fresh --seed
+make up    # Inicializa os containers (Sail up -d)
+make down  # Encerra os processos
 ```
 
-### 5. (Opcional) Executar Suíte de Testes
-Caso deseje comprovar a estabilidade da API e suas travas lógicas, execute de dentro do contêiner o **Pest**:
+### 4. (Opcional) Executar a Suíte de Testes
+Para certificar-se da integridade das validações de Requests e aprovações pelas Policies (Security) construídas com o framework **Pest**, digite:
 ```bash
-./vendor/bin/sail test
+make test
 ```
 
-A partir do momento em que subiu o Servidor Sail, basta bater nos *endpoints* via URL `http://localhost/api/tasks`. **Para ter os dados iniciais o Seeder configura o usuário padrão `test@example.com` (Senha: `password`).**
+A partir do momento em que os envios do `make up` finalizam, a sua API estará disponível globalmente em `http://localhost/api/tasks`. **Para ter os dados iniciais do teste, o Seeder injeta no banco o usuário padrão `test@example.com` (Senha: `password`).**
 
 ---
 
