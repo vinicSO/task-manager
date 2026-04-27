@@ -19,9 +19,14 @@ import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Tarefas',
+        title: 'Painel',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Gerenciador',
+        href: '/tasks',
+        icon: BookOpen,
     },
 ];
 
